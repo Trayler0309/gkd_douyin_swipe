@@ -1,0 +1,118 @@
+// GKD 抖音极速版自动滑屏 - 本地订阅规则
+// 模拟真人随机间隔，避免被检测
+//
+// 导入方式：GKD → 订阅 → 本地订阅 → 导入此文件
+// 导入后找到「自动滑屏」规则组 → 开启即可
+
+{
+  id: 'com.ss.android.ugc.aweme.lite',
+  name: '抖音极速版',
+  groups: [
+    {
+      key: 0,
+      name: '自动滑屏',
+      desc: '模拟真人随机间隔自动上滑，5-13秒不规律切换',
+      enable: false,
+      matchRoot: true,
+      forcedTime: 15000,
+
+      rules: [
+        // 滑屏A：5秒间隔
+        {
+          key: 0,
+          name: '滑屏A-5秒',
+          matches: 'TextView[vid="desc"]',
+          action: 'swipe',
+          swipeArg: {
+            start: { x: 'screenWidth*0.45', y: 'screenHeight*0.72' },
+            end: { x: 'screenWidth*0.55', y: 'screenHeight*0.22' },
+            duration: 380,
+          },
+          actionCd: 5000,
+          actionDelay: 700,
+          resetMatch: 'activity',
+        },
+
+        // 滑屏B：7秒间隔，滑动起点偏左
+        {
+          key: 1,
+          name: '滑屏B-7秒',
+          matches: 'TextView[vid="desc"]',
+          action: 'swipe',
+          swipeArg: {
+            start: { x: 'screenWidth*0.35', y: 'screenHeight*0.68' },
+            end: { x: 'screenWidth*0.48', y: 'screenHeight*0.28' },
+            duration: 420,
+          },
+          actionCd: 7000,
+          actionDelay: 900,
+          resetMatch: 'activity',
+        },
+
+        // 滑屏C：9秒间隔，滑动起点偏右
+        {
+          key: 2,
+          name: '滑屏C-9秒',
+          matches: 'TextView[vid="desc"]',
+          action: 'swipe',
+          swipeArg: {
+            start: { x: 'screenWidth*0.55', y: 'screenHeight*0.7' },
+            end: { x: 'screenWidth*0.42', y: 'screenHeight*0.25' },
+            duration: 310,
+          },
+          actionCd: 9000,
+          actionDelay: 1100,
+          resetMatch: 'activity',
+        },
+
+        // 滑屏D：11秒间隔
+        {
+          key: 3,
+          name: '滑屏D-11秒',
+          matches: 'TextView[vid="desc"]',
+          action: 'swipe',
+          swipeArg: {
+            start: { x: 'screenWidth*0.5', y: 'screenHeight*0.65' },
+            end: { x: 'screenWidth*0.5', y: 'screenHeight*0.3' },
+            duration: 360,
+          },
+          actionCd: 11000,
+          actionDelay: 600,
+          resetMatch: 'activity',
+        },
+
+        // 滑屏E：13秒间隔，模拟认真看完
+        {
+          key: 4,
+          name: '滑屏E-13秒',
+          matches: 'TextView[vid="desc"]',
+          action: 'swipe',
+          swipeArg: {
+            start: { x: 'screenWidth*0.4', y: 'screenHeight*0.75' },
+            end: { x: 'screenWidth*0.52', y: 'screenHeight*0.2' },
+            duration: 450,
+          },
+          actionCd: 13000,
+          actionDelay: 1300,
+          resetMatch: 'activity',
+        },
+
+        // 备用匹配：通过评论按钮识别播放页（5秒间隔）
+        {
+          key: 5,
+          name: '备用-评论按钮识别',
+          matches: 'FrameLayout[vid="comment_layout"][clickable=true]',
+          action: 'swipe',
+          swipeArg: {
+            start: { x: 'screenWidth/2', y: 'screenHeight*0.65' },
+            end: { x: 'screenWidth/2', y: 'screenHeight*0.3' },
+            duration: 400,
+          },
+          actionCd: 6000,
+          actionDelay: 500,
+          resetMatch: 'activity',
+        },
+      ],
+    },
+  ],
+}
