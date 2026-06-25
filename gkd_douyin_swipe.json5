@@ -1,5 +1,14 @@
 // GKD 抖音极速版自动滑屏 - 本地订阅规则
 // 模拟真人随机间隔，避免被检测
+// 仅在视频主屏滑屏，赚钱任务界面不触发
+//
+// v3 修正（2026-06-25）：
+// - 赚钱任务页也在 MainActivity 内，activityIds 无法排除
+// - 赚钱任务页也有 ViewPager[vid="viewpager"][desc="视频"]，matches 无法排除
+// - 解决：用 excludeMatches 排除赚钱任务页独有特征
+//   ViewGroup[desc*="赚金币"] → desc='新人看视频赚金币'（赚钱页独有，视频主屏无）
+//   ViewGroup[desc*="签到"]   → desc='签到宝箱全不忘...'/desc='距XX签到结束...'(赚钱页独有)
+// - 主页"开宝箱"金币按钮(vid=null, text="开宝箱")不再排除（它不影响滑屏）
 //
 // 导入方式：GKD → 订阅 → 本地订阅 → 导入此文件
 // 导入后找到「自动滑屏」规则组 → 开启即可
@@ -11,7 +20,7 @@
     {
       key: 0,
       name: '自动滑屏',
-      desc: '模拟真人随机间隔自动上滑，5-13秒不规律切换',
+      desc: '模拟真人随机间隔自动上滑 5-13 秒（仅视频主屏，赚钱任务页不触发）',
       enable: false,
       matchRoot: true,
       forcedTime: 15000,
@@ -21,7 +30,12 @@
         {
           key: 0,
           name: '滑屏A-5秒',
-          matches: 'TextView[vid="desc"]',
+          matches: 'ViewPager[vid="viewpager"][desc="视频"][visibleToUser=true]',
+          // 排除赚钱任务页：出现"赚金币"或"签到"描述时停止匹配
+          excludeMatches: [
+            'ViewGroup[desc*="赚金币"]',
+            'ViewGroup[desc*="签到"]',
+          ],
           action: 'swipe',
           swipeArg: {
             start: { x: 'screenWidth*0.45', y: 'screenHeight*0.72' },
@@ -33,11 +47,15 @@
           resetMatch: 'activity',
         },
 
-        // 滑屏B：7秒间隔，滑动起点偏左
+        // 滑屏B：7秒间隔
         {
           key: 1,
           name: '滑屏B-7秒',
-          matches: 'TextView[vid="desc"]',
+          matches: 'ViewPager[vid="viewpager"][desc="视频"][visibleToUser=true]',
+          excludeMatches: [
+            'ViewGroup[desc*="赚金币"]',
+            'ViewGroup[desc*="签到"]',
+          ],
           action: 'swipe',
           swipeArg: {
             start: { x: 'screenWidth*0.35', y: 'screenHeight*0.68' },
@@ -49,11 +67,15 @@
           resetMatch: 'activity',
         },
 
-        // 滑屏C：9秒间隔，滑动起点偏右
+        // 滑屏C：9秒间隔
         {
           key: 2,
           name: '滑屏C-9秒',
-          matches: 'TextView[vid="desc"]',
+          matches: 'ViewPager[vid="viewpager"][desc="视频"][visibleToUser=true]',
+          excludeMatches: [
+            'ViewGroup[desc*="赚金币"]',
+            'ViewGroup[desc*="签到"]',
+          ],
           action: 'swipe',
           swipeArg: {
             start: { x: 'screenWidth*0.55', y: 'screenHeight*0.7' },
@@ -69,7 +91,11 @@
         {
           key: 3,
           name: '滑屏D-11秒',
-          matches: 'TextView[vid="desc"]',
+          matches: 'ViewPager[vid="viewpager"][desc="视频"][visibleToUser=true]',
+          excludeMatches: [
+            'ViewGroup[desc*="赚金币"]',
+            'ViewGroup[desc*="签到"]',
+          ],
           action: 'swipe',
           swipeArg: {
             start: { x: 'screenWidth*0.5', y: 'screenHeight*0.65' },
@@ -81,11 +107,15 @@
           resetMatch: 'activity',
         },
 
-        // 滑屏E：13秒间隔，模拟认真看完
+        // 滑屏E：13秒间隔
         {
           key: 4,
           name: '滑屏E-13秒',
-          matches: 'TextView[vid="desc"]',
+          matches: 'ViewPager[vid="viewpager"][desc="视频"][visibleToUser=true]',
+          excludeMatches: [
+            'ViewGroup[desc*="赚金币"]',
+            'ViewGroup[desc*="签到"]',
+          ],
           action: 'swipe',
           swipeArg: {
             start: { x: 'screenWidth*0.4', y: 'screenHeight*0.75' },
@@ -97,11 +127,15 @@
           resetMatch: 'activity',
         },
 
-        // 备用匹配：通过评论按钮识别播放页（5秒间隔）
+        // 备用：评论按钮识别（6秒间隔）
         {
           key: 5,
-          name: '备用-评论按钮识别',
-          matches: 'FrameLayout[vid="comment_layout"][clickable=true]',
+          name: '备用-评论按钮',
+          matches: 'FrameLayout[vid="comment_layout"][clickable=true][visibleToUser=true]',
+          excludeMatches: [
+            'ViewGroup[desc*="赚金币"]',
+            'ViewGroup[desc*="签到"]',
+          ],
           action: 'swipe',
           swipeArg: {
             start: { x: 'screenWidth/2', y: 'screenHeight*0.65' },
